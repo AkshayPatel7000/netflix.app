@@ -31,7 +31,7 @@ const slice = createSlice({
     setMovie: (state, action) => {
       const data = action.payload.reverse();
       state.movies = data?.sort(
-        (a, b) => parseInt(a?.added) - parseInt(b?.added),
+        (a, b) => parseInt(b?.added) - parseInt(a?.added),
       );
     },
     setMediaDetails: (state, action) => {
@@ -46,7 +46,7 @@ const slice = createSlice({
     setSeries: (state, action) => {
       const data = action.payload.reverse();
       state.series = data?.sort(
-        (a, b) => parseInt(a?.added) - parseInt(b?.added),
+        (a, b) => parseInt(b?.added) - parseInt(a?.added),
       );
     },
     setSeriesDetails: (state, action) => {
