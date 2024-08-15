@@ -1,5 +1,5 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FONTSIZE} from '../../Utils/Resource';
 import {getMoviesCategories} from '../../Services/AuthServices/AuthServices';
 import {useTypedSelector} from '../../Store/MainStore';
@@ -8,17 +8,20 @@ import {useNavigation} from '@react-navigation/native';
 import NavigationStrings from '../../constants/NavigationStrings';
 import {selectIsLoading} from '../../Store/Slices/LoaderSlice';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import FAB from '../../common/FAB/FAB';
 
 const Movies = () => {
   const movieCategories = useTypedSelector(selectSetMovieCategories);
   const navigation = useNavigation();
   const loading = useTypedSelector(selectIsLoading);
 
+  const [searchMovies, setSearchMovies] = useState([]);
+
   useEffect(() => {
     const init = async () => {
       await getMoviesCategories();
     };
-
+    setSearchMovies(movieCategories);
     if (movieCategories?.length === 0) {
       init();
     }
@@ -49,37 +52,48 @@ const Movies = () => {
       </SkeletonPlaceholder>
     );
   };
+  const onSearch = value => {
+    const tempSeries = movieCategories.filter(ele => {
+      const name = ele?.category_name?.toLowerCase();
+      const newValue = value.toLowerCase();
+      return name.includes(newValue);
+    });
+    setSearchMovies(tempSeries);
+  };
   return (
-    <View style={styles.main}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>What Would you like to watch?</Text>
+    <>
+      <View style={styles.main}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>What Would you like to watch?</Text>
+        </View>
+        {loading ? (
+          <PlaceholderLoader />
+        ) : (
+          <FlatList
+            contentContainerStyle={{padding: 20, paddingBottom: 100}}
+            data={searchMovies}
+            showsVerticalScrollIndicator={false}
+            columnWrapperStyle={{
+              justifyContent: 'space-between',
+              paddingBottom: 10,
+            }}
+            numColumns={2}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  style={styles.card}
+                  onPress={() => moveTo(item)}>
+                  <Text style={styles.text} numberOfLines={2}>
+                    {item?.category_name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        )}
       </View>
-      {loading ? (
-        <PlaceholderLoader />
-      ) : (
-        <FlatList
-          contentContainerStyle={{padding: 20, paddingBottom: 100}}
-          data={movieCategories}
-          showsVerticalScrollIndicator={false}
-          columnWrapperStyle={{
-            justifyContent: 'space-between',
-            paddingBottom: 10,
-          }}
-          numColumns={2}
-          renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                style={styles.card}
-                onPress={() => moveTo(item)}>
-                <Text style={styles.text} numberOfLines={2}>
-                  {item?.category_name}
-                </Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
-      )}
-    </View>
+      <FAB onSubmitEditing={e => onSearch(e?.nativeEvent?.text)} />
+    </>
   );
 };
 
@@ -97,6 +111,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     paddingHorizontal: 5,
+
+    elevation: 8,
+    // shadowColor: '#fff',
   },
   text: {
     color: '#000',

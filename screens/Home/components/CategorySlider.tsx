@@ -17,10 +17,17 @@ const CategorySlider = (props: CategorySliderProps) => {
 
   const handlePress = item => {
     if (item?.stream_id) {
-      navigation.navigate(NavigationStrings.DETAILS, {...item});
+      // navigation.navigate(NavigationStrings.DETAILS, {...item});
+      navigation.navigate(NavigationStrings.MOVIE_STACK, {
+        screen: NavigationStrings.DETAILS,
+        params: {...item},
+      });
     }
     if (item?.series_id) {
-      navigation.navigate(NavigationStrings.SERIES_DETAILS, {...item});
+      navigation.navigate(NavigationStrings.SERIES_STACK, {
+        screen: NavigationStrings.SERIES_DETAILS,
+        params: {...item},
+      });
     }
   };
 

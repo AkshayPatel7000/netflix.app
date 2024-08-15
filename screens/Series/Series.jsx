@@ -1,5 +1,5 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FONTSIZE} from '../../Utils/Resource';
 import {
   getMoviesCategories,
@@ -14,16 +14,19 @@ import {useNavigation} from '@react-navigation/native';
 import NavigationStrings from '../../constants/NavigationStrings';
 import {selectIsLoading} from '../../Store/Slices/LoaderSlice';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import FAB from '../../common/FAB/FAB';
 
 const Series = () => {
   const seriesCategories = useTypedSelector(selectSeriesCategories);
   const navigation = useNavigation();
   const loading = useTypedSelector(selectIsLoading);
+  const [searchSeries, setSearchSeries] = useState([]);
 
   useEffect(() => {
     const init = async () => {
       await getSeriesCategories();
     };
+    setSearchSeries(seriesCategories);
 
     if (seriesCategories?.length === 0) {
       init();
@@ -32,7 +35,14 @@ const Series = () => {
   const moveTo = item => {
     navigation.navigate(NavigationStrings.SERIES_SCREEN, {...item});
   };
-
+  const onSearch = value => {
+    const tempSeries = seriesCategories.filter(ele => {
+      const name = ele.category_name.toLowerCase();
+      const newValue = value.toLowerCase();
+      return name.includes(newValue);
+    });
+    setSearchSeries(tempSeries);
+  };
   const PlaceholderLoader = () => {
     return (
       <SkeletonPlaceholder
@@ -65,7 +75,7 @@ const Series = () => {
       ) : (
         <FlatList
           contentContainerStyle={{padding: 20, paddingBottom: 100}}
-          data={seriesCategories}
+          data={searchSeries}
           showsVerticalScrollIndicator={false}
           columnWrapperStyle={{
             justifyContent: 'space-between',
@@ -85,6 +95,7 @@ const Series = () => {
           }}
         />
       )}
+      <FAB onSubmitEditing={e => onSearch(e?.nativeEvent?.text)} />
     </View>
   );
 };

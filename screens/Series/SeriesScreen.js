@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Pressable,
@@ -18,11 +18,17 @@ import {useTypedSelector} from '../../Store/MainStore';
 import {selectSeries} from '../../Store/Slices/AuthSlice';
 import {selectIsLoading} from '../../Store/Slices/LoaderSlice';
 import moment from 'moment';
+import FAB from '../../common/FAB/FAB';
 
 const SeriesScreen = ({route}) => {
   const navigation = useNavigation();
+  const [searchSeries, setSearchSeries] = useState([]);
+
   const series = useTypedSelector(selectSeries);
   const loading = useTypedSelector(selectIsLoading);
+  useEffect(() => {
+    setSearchSeries(series);
+  }, [series]);
   useEffect(() => {
     const init = async () => {
       await getSeries(route?.params?.category_id);
@@ -71,55 +77,65 @@ const SeriesScreen = ({route}) => {
       </SkeletonPlaceholder>
     );
   };
-
+  const onSearch = value => {
+    const tempSeries = series.filter(ele => {
+      const name = ele.name.toLowerCase();
+      const newValue = value.toLowerCase();
+      return name.includes(newValue);
+    });
+    setSearchSeries(tempSeries);
+  };
   return (
-    <View style={styles.main}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="chevron-left" size={30} />
-        </TouchableOpacity>
-        <Text style={styles.headingText}>Series</Text>
-        <View />
-      </View>
-      {loading && <PlaceholderLoader />}
-      <FlatList
-        data={series}
-        numColumns={2}
-        contentContainerStyle={{padding: 20, paddingBottom: 100}}
-        columnWrapperStyle={styles.columnWrapperStyle}
-        renderItem={({item}) => {
-          // console.log('🚀 ~ SeriesScreen ~ item:', item);
-          return (
-            <Pressable
-              style={styles.imageContainer}
-              onPress={() => handlePress(item)}
-              key={item.series_id}>
-              <FastImage style={styles.image} source={{uri: item?.cover}} />
-              <LinearGradient
-                colors={['#00000000', '#0000001A', '#000000D6']}
-                style={styles.gradient}>
-                <View style={{padding: 10}}>
-                  <Text style={{color: '#fff'}} numberOfLines={2}>
-                    {item?.name}
-                  </Text>
-                  <View style={styles.titleContainer}>
-                    <Icon name="star" size={14} color={'#ebe428'} />
-                    <Text style={styles.title} numberOfLines={2}>
-                      {item?.rating_5based}
+    <>
+      <View style={styles.main}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="chevron-left" size={30} />
+          </TouchableOpacity>
+          <Text style={styles.headingText}>Series</Text>
+          <View />
+        </View>
+        {loading && <PlaceholderLoader />}
+        <FlatList
+          data={searchSeries}
+          numColumns={2}
+          contentContainerStyle={{padding: 20, paddingBottom: 100}}
+          columnWrapperStyle={styles.columnWrapperStyle}
+          renderItem={({item}) => {
+            // console.log('🚀 ~ SeriesScreen ~ item:', item);
+            return (
+              <Pressable
+                style={styles.imageContainer}
+                onPress={() => handlePress(item)}
+                key={item.series_id}>
+                <FastImage style={styles.image} source={{uri: item?.cover}} />
+                <LinearGradient
+                  colors={['#00000000', '#0000001A', '#000000D6']}
+                  style={styles.gradient}>
+                  <View style={{padding: 10}}>
+                    <Text style={{color: '#fff'}} numberOfLines={2}>
+                      {item?.name}
+                    </Text>
+                    <View style={styles.titleContainer}>
+                      <Icon name="star" size={14} color={'#ebe428'} />
+                      <Text style={styles.title} numberOfLines={2}>
+                        {item?.rating_5based}
+                      </Text>
+                    </View>
+                    <Text style={{color: '#fff'}} numberOfLines={2}>
+                      {moment(item?.releaseDate).format('DD MMM YYYY')}
                     </Text>
                   </View>
-                  <Text style={{color: '#fff'}} numberOfLines={2}>
-                    {moment(item?.releaseDate).format('DD MMM YYYY')}
-                  </Text>
-                </View>
-              </LinearGradient>
-            </Pressable>
-          );
-        }}
-        keyExtractor={item => item?.series_id}
-        showsHorizontalScrollIndicator={false}
-      />
-    </View>
+                </LinearGradient>
+              </Pressable>
+            );
+          }}
+          keyExtractor={item => item?.series_id}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+      <FAB onSubmitEditing={e => onSearch(e?.nativeEvent?.text)} />
+    </>
   );
 };
 

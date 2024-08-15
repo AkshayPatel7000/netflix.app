@@ -1,10 +1,9 @@
-import {View, StyleSheet, FlatList, Text} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import categories from '../../data/categories';
-import CategorySlider from './components/CategorySlider';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import Header from '../../common/Header';
 import {LocalStorage} from '../../Utils/Resource';
-import {useFocusEffect} from '@react-navigation/native';
+import CategorySlider from './components/CategorySlider';
 
 const Home = props => {
   const [movies, setMovies] = useState([]);

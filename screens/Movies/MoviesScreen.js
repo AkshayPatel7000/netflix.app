@@ -1,29 +1,28 @@
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
-  Image,
   Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import FastImage from 'react-native-fast-image';
+import LinearGradient from 'react-native-linear-gradient';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import Icon from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import FAB from '../../common/FAB/FAB';
+import NavigationStrings from '../../constants/NavigationStrings';
 import {getMovies} from '../../Services/AuthServices/AuthServices';
 import {useTypedSelector} from '../../Store/MainStore';
 import {selectMovies} from '../../Store/Slices/AuthSlice';
-import FastImage from 'react-native-fast-image';
-import LinearGradient from 'react-native-linear-gradient';
 import {selectIsLoading} from '../../Store/Slices/LoaderSlice';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import NavigationStrings from '../../constants/NavigationStrings';
-import moment from 'moment';
 
 const MoviesScreen = ({route}) => {
   const navigation = useNavigation();
+  const [searchMovies, setSearchMovies] = useState([]);
   const movies = useTypedSelector(selectMovies);
-  console.log('🚀 ~ MoviesScreen ~ movies:', movies[0]);
   const loading = useTypedSelector(selectIsLoading);
   useEffect(() => {
     const init = async () => {
@@ -31,6 +30,9 @@ const MoviesScreen = ({route}) => {
     };
     init();
   }, [route?.params?.category_id]);
+  useEffect(() => {
+    setSearchMovies(movies);
+  }, [movies]);
 
   const handlePress = item => {
     navigation.navigate(NavigationStrings.DETAILS, {...item});
@@ -73,49 +75,62 @@ const MoviesScreen = ({route}) => {
       </SkeletonPlaceholder>
     );
   };
-
+  const onSearch = value => {
+    const tempMovies = movies.filter(ele => {
+      const name = ele.name.toLowerCase();
+      const newValue = value.toLowerCase();
+      return name.includes(newValue);
+    });
+    setSearchMovies(tempMovies);
+  };
   return (
-    <View style={styles.main}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="chevron-left" size={30} />
-        </TouchableOpacity>
-        <Text style={styles.headingText}>Movies</Text>
-        <View />
-      </View>
-      {loading && <PlaceholderLoader />}
-      <FlatList
-        data={movies}
-        numColumns={2}
-        contentContainerStyle={{padding: 20, paddingBottom: 100}}
-        columnWrapperStyle={styles.columnWrapperStyle}
-        renderItem={({item}) => (
-          <Pressable
-            style={styles.imageContainer}
-            onPress={() => handlePress(item)}
-            key={item.stream_id}>
-            <FastImage style={styles.image} source={{uri: item?.stream_icon}} />
-            <LinearGradient
-              colors={['#00000000', '#0000001A', '#000000D6']}
-              style={styles.gradient}>
-              <View style={{padding: 10}}>
-                <Text style={{color: '#fff'}} numberOfLines={2}>
-                  {item?.name}
-                </Text>
-                <View style={styles.titleContainer}>
-                  <Icon name="star" size={14} color={'#ebe428'} />
-                  <Text style={styles.title} numberOfLines={2}>
-                    {item?.rating_5based}
+    <>
+      <View style={styles.main}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="chevron-left" size={30} />
+          </TouchableOpacity>
+          <Text style={styles.headingText}>Movies</Text>
+          <View />
+        </View>
+        {loading && <PlaceholderLoader />}
+        <FlatList
+          data={searchMovies}
+          numColumns={2}
+          contentContainerStyle={{padding: 20, paddingBottom: 100}}
+          columnWrapperStyle={styles.columnWrapperStyle}
+          renderItem={({item}) => (
+            <Pressable
+              style={styles.imageContainer}
+              onPress={() => handlePress(item)}
+              key={item.stream_id}>
+              <FastImage
+                style={styles.image}
+                source={{uri: item?.stream_icon}}
+              />
+              <LinearGradient
+                colors={['#00000000', '#0000001A', '#000000D6']}
+                style={styles.gradient}>
+                <View style={{padding: 10}}>
+                  <Text style={{color: '#fff'}} numberOfLines={2}>
+                    {item?.name}
                   </Text>
+                  <View style={styles.titleContainer}>
+                    <Icon name="star" size={14} color={'#ebe428'} />
+                    <Text style={styles.title} numberOfLines={2}>
+                      {item?.rating_5based}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </LinearGradient>
-          </Pressable>
-        )}
-        keyExtractor={item => item?.stream_id}
-        showsHorizontalScrollIndicator={false}
-      />
-    </View>
+              </LinearGradient>
+            </Pressable>
+          )}
+          keyExtractor={item => item?.stream_id}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+      <FAB onSubmitEditing={e => onSearch(e?.nativeEvent?.text)} />
+    </>
   );
 };
 

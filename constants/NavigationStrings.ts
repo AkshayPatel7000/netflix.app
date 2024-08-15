@@ -5,7 +5,7 @@ export default {
     TABS: 'Tabs',
     COMINGSOON: 'Coming Soon',
     SEARCH: 'Search',
-    PROFILE: 'PROFILE',
+    PROFILE: 'Profile',
     LOGIN: 'Login',
     MAIN: 'Main',
     MOVIE_STACK:'Movies',

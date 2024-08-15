@@ -34,7 +34,7 @@ const App = () => {
   return showSplash ? (
     <SplashScreen />
   ) : (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{flex: 1, backgroundColor: 'black'}}>
       <Routes />
       <FlashMessage duration={3000} />
     </GestureHandlerRootView>
