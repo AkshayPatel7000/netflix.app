@@ -17,6 +17,7 @@ import {getSeries} from '../../Services/AuthServices/AuthServices';
 import {useTypedSelector} from '../../Store/MainStore';
 import {selectSeries} from '../../Store/Slices/AuthSlice';
 import {selectIsLoading} from '../../Store/Slices/LoaderSlice';
+import moment from 'moment';
 
 const SeriesScreen = ({route}) => {
   const navigation = useNavigation();
@@ -87,6 +88,7 @@ const SeriesScreen = ({route}) => {
         contentContainerStyle={{padding: 20, paddingBottom: 100}}
         columnWrapperStyle={styles.columnWrapperStyle}
         renderItem={({item}) => {
+          // console.log('🚀 ~ SeriesScreen ~ item:', item);
           return (
             <Pressable
               style={styles.imageContainer}
@@ -106,6 +108,9 @@ const SeriesScreen = ({route}) => {
                       {item?.rating_5based}
                     </Text>
                   </View>
+                  <Text style={{color: '#fff'}} numberOfLines={2}>
+                    {moment(item?.releaseDate).format('DD MMM YYYY')}
+                  </Text>
                 </View>
               </LinearGradient>
             </Pressable>

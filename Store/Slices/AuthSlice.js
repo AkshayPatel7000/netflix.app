@@ -29,10 +29,8 @@ const slice = createSlice({
       );
     },
     setMovie: (state, action) => {
-      const data = action.payload.reverse();
-      state.movies = data?.sort(
-        (a, b) => parseInt(b?.added) - parseInt(a?.added),
-      );
+      const data = action.payload;
+      state.movies = data.reverse();
     },
     setMediaDetails: (state, action) => {
       state.mediaDetails = action.payload;
@@ -45,9 +43,12 @@ const slice = createSlice({
     },
     setSeries: (state, action) => {
       const data = action.payload.reverse();
-      state.series = data?.sort(
-        (a, b) => parseInt(b?.added) - parseInt(a?.added),
-      );
+      state.series = data?.sort((a, b) => {
+        const dateA = new Date(a.releaseDate);
+        const dateB = new Date(b.releaseDate);
+
+        return dateB - dateA; // For ascending order
+      });
     },
     setSeriesDetails: (state, action) => {
       state.seriesDetails = action.payload;

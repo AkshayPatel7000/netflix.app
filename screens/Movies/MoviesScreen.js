@@ -18,10 +18,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import {selectIsLoading} from '../../Store/Slices/LoaderSlice';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import NavigationStrings from '../../constants/NavigationStrings';
+import moment from 'moment';
 
 const MoviesScreen = ({route}) => {
   const navigation = useNavigation();
   const movies = useTypedSelector(selectMovies);
+  console.log('🚀 ~ MoviesScreen ~ movies:', movies[0]);
   const loading = useTypedSelector(selectIsLoading);
   useEffect(() => {
     const init = async () => {

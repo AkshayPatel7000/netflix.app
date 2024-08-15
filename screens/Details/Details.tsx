@@ -171,7 +171,7 @@ const Details = ({navigation, route}) => {
       showsVerticalScrollIndicator={false}>
       <View>
         <View style={styles.header}>
-          <Pressable onPress={() => navigation.navigate('Home')}>
+          <Pressable onPress={() => navigation.goBack()}>
             <Icon name="chevron-left" size={30} color="white" />
           </Pressable>
           {/* <Icon name="cast" size={30} color="white" /> */}

@@ -25,8 +25,8 @@ const Home = props => {
           setSeries(recentlyWatchedSeries);
         }
       };
-      // fetchMovies();
-      // fetchSeries();
+      fetchMovies();
+      fetchSeries();
     }, [props]),
   );
 
