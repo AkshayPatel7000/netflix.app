@@ -1,0 +1,26 @@
+{
+  "translation": {
+    "loginPage": {
+      "let": "आइए",
+      "signin": "साइन इन करें",
+      "signintxt": "साइन इन",
+      "email": "ईमेल दर्ज करें",
+      "password": "पास वर्ड दर्ज करें",
+      "forgotPassword": "पासवर्ड भूल गए?",
+      "login": "लॉग इन करें",
+      "newuser": "नए उपयोगकर्ता?",
+      "register": "पंजीकरण"
+    },
+    "signUp": {
+      "signup": "साइन अप करें",
+      "signuptxt": "साइन अप",
+      "mobile": "मोबाइल नंबर",
+      "termprefix":"साइन अप करके आप हमारे",
+      "terms": "नियम एवं शर्तों",
+      "policy": "गोपनीयता नीति",
+      "termsufix": "से सहमत हैं।",
+      "and": "और",
+      "ExistingUser": "मौजूदा उपयोगकर्ता?"
+    }
+  }
+}

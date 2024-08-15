@@ -1,0 +1,26 @@
+{
+  "translation": {
+    "loginPage": {
+      "let": "Let's",
+      "signin": "Sign In",
+      "signintxt": "Sign In",
+      "email": "Enter email",
+      "password": "Enter password",
+      "forgotPassword": "Forgot password?",
+      "login": "Log in",
+      "newuser": "New User?",
+      "register": "Register"
+    },
+    "signUp":{
+      "signup": "Sign Up",
+      "signuptxt": "Sign Up",
+      "mobile": "Mobile number",
+      "termprefix":"By sign up your agree to our",
+      "terms": "term & conditions",
+      "policy": "privacy policy",
+      "termsufix": ".",
+      "and": "and",
+      "ExistingUser": "Existing User?"
+    }
+  }
+}
